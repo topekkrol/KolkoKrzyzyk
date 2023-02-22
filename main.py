@@ -1,6 +1,33 @@
 import random
 
 
+def czy_mamy_zwyciesce(lista):
+    lista.sort()
+    poczatek_poziom=[1,4,7]
+    poczatek_pionowo=[1,2,3]
+    for liczby in lista:
+        if liczby in poczatek_poziom:
+            index = lista.index(liczby)
+            try:
+                if (lista[index]+1) == lista[index+1] and lista[index+1]+1 == lista[index+2]:
+                    return True
+            except Exception as e:
+                print(e)
+
+    for liczby in lista:
+        if liczby in poczatek_pionowo:
+            index = lista.index(liczby)
+            try:
+                if (lista[index]+3) == lista[index+1] and lista[index+1]+3 == lista[index+2]:
+                    return True
+            except Exception as e:
+                print(e)
+    if 3 in lista and 5 in lista and 7 in lista:
+        return True
+    if 1 in lista and 5 in lista and 9 in lista:
+        return True
+
+
 def wytwornia_list():
     miejsce={}
     for i in range (1,11):
@@ -35,14 +62,19 @@ def zmiana_na_planszy(lista,lokalizacja,znak):
     lista[lokalizacja]=znak
     return lista
 
-def ruch(kto):
-    wybor_gracza = int(input("blablabla"))
-    while wybor_gracza in pola_gracza or wybor_gracza in pola_komputera:
-        wybor_gracza = int(input("to miejsce jest zajete, wybierz inne:"))
-    pola_gracza.append(wybor_gracza)
-    for pozycyja in pola_gracza:
-        list = zmiana_na_planszy(lista, pozycyja, "o")
+def ruch(kto,znak,wartosc):
+    persona = wartosc
+    while persona in pola_gracza or persona in pola_komputera:
+        if znak == "x":
+            persona = random.randint(1,9)
+        else:
+            persona = int(input("to miejsce jest zajete, wybierz inne:"))
+    kto.append(persona)
+    for pozycyja in kto:
+        list = zmiana_na_planszy(lista, pozycyja, znak)
     print(draw_move(list))
+
+
 
 lista = (wytwornia_list())
 lista[5]="x"
@@ -51,19 +83,15 @@ pola_gracza=[]
 
 print(draw_move(lista))
 while True:
+    persona = int(input("blablabla"))
+    ruch(pola_gracza,'o',persona)
+    if czy_mamy_zwyciesce(pola_gracza):
+        print("wygrywa gracz")
+        break
+    ruch(pola_komputera,'x', random.randint(1,9))
+    if czy_mamy_zwyciesce(pola_komputera):
+        print("wygrywa komputer")
+        break
 
-    wybor_gracza = int(input("blablabla"))
-    while wybor_gracza in pola_gracza or wybor_gracza in pola_komputera:
-        wybor_gracza = int(input("to miejsce jest zajete, wybierz inne:"))
-    pola_gracza.append(wybor_gracza)
-    for pozycyja in pola_gracza:
-        list = zmiana_na_planszy(lista, pozycyja, "o")
-    print(draw_move(list))
 
-    wybor_komputera = random.randint(1,9)
-    while wybor_komputera in pola_gracza or wybor_komputera in pola_komputera:
-        wybor_komputera = random.randint(1,9)
-    pola_komputera.append(wybor_komputera)
-    for pozycja in pola_komputera:
-        lista = zmiana_na_planszy(lista,pozycja,"x")
-    print(draw_move(lista))
+print('koniec')
